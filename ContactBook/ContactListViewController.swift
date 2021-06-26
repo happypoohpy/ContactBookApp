@@ -6,14 +6,17 @@
 //
 
 import UIKit
+import RealmSwift
 
-class ContactListViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, AddEditContactDelegate {
+class ContactListViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var contacts : [Contact] = [Contact]()
+    var contacts : Results<Contact>?
     
     let searchController = UISearchController()
+    
+    var notificationToken: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +26,12 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
         navigationItem.searchController = self.searchController
         
         self.navigationItem.backButtonTitle = ""
+        
+        let realm = try! Realm()
+        
+        self.contacts = realm.objects(Contact.self)
+        
+        self.observeContactListChanges()
     }
 
     func updateSearchResults(for searchController: UISearchController) {
@@ -34,17 +43,19 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.contacts.count
+        return self.contacts?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "contactTableViewCell", for: indexPath) as! ContactTableViewCell
         
-        let contact = contacts[indexPath.row]
-        let name = "\(contact.firstName) \(contact.lastName)"
-        
-        cell.setup(name: name, mobileNumber: contact.mobileNumber)
+        if let contacts = self.contacts {
+            let contact = contacts[indexPath.row]
+            let name = "\(contact.firstName) \(contact.lastName)"
+            
+            cell.setup(name: name, mobileNumber: contact.mobileNumber)
+        }
         
         return cell
     }
@@ -56,9 +67,23 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
-            self.contacts.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .top)
+            removeContact(row: indexPath.row)
             return
+        }
+    }
+    
+    func removeContact(row: Int) {
+        guard let contacts = self.contacts else {
+            return
+        }
+        let realm = try! Realm()
+        
+        do {
+            try realm.write {
+                realm.delete(contacts[row])
+            }
+        } catch let error as NSError {
+            print("adding to realm error \(error.localizedDescription)")
         }
     }
     
@@ -67,18 +92,45 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
             guard let selectedPath = self.tableView.indexPathForSelectedRow else {
                 return
             }
-            target.contact = self.contacts[selectedPath.row]
-            return
-        }
-        if let target = segue.destination as? AddEditContactViewController {
-            target.delegate = self
+            guard let contacts = self.contacts else {
+                return
+            }
+            target.contact = contacts[selectedPath.row]
             return
         }
     }
     
-    func contactAdded(newContact: Contact) {
-        self.contacts.append(newContact)
-        self.tableView.reloadData()
+    func observeContactListChanges() {
+        let realm = try! Realm()
+        let results = realm.objects(Contact.self)
+        // Observe collection notifications. Keep a strong
+        // reference to the notification token or the
+        // observation will stop.
+        notificationToken = results.observe { [weak self] (changes: RealmCollectionChange) in
+            guard let tableView = self?.tableView else { return }
+            switch changes {
+            case .initial:
+                // Results are now populated and can be accessed without blocking the UI
+                tableView.reloadData()
+            case .update(_, let deletions, let insertions, let modifications):
+                // Query results have changed, so apply them to the UITableView
+                tableView.performBatchUpdates({
+                    // Always apply updates in the following order: deletions, insertions, then modifications.
+                    // Handling insertions before deletions may result in unexpected behavior.
+                    tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0)}),
+                                         with: .automatic)
+                    tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                         with: .automatic)
+                    tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
+                                         with: .automatic)
+                }, completion: { finished in
+                    // ...
+                })
+            case .error(let error):
+                // An error occurred while opening the Realm file on the background worker thread
+                fatalError("\(error)")
+            }
+        }
     }
 }
 

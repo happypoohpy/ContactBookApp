@@ -7,10 +7,7 @@
 
 import Foundation
 import UIKit
-
-protocol AddEditContactDelegate {
-    func contactAdded(newContact: Contact)
-}
+import RealmSwift
 
 class AddEditContactViewController: UIViewController {
     
@@ -19,8 +16,6 @@ class AddEditContactViewController: UIViewController {
     @IBOutlet weak var textFieldMobileNumber: UITextField!
     @IBOutlet weak var textFieldEmailAddress: UITextField!
     @IBOutlet weak var textFieldCompany: UITextField!
-    
-    var delegate: AddEditContactDelegate?
     
     override func viewDidLoad() {
         
@@ -35,8 +30,24 @@ class AddEditContactViewController: UIViewController {
         
         let contact = Contact.init(firstName: firstName, lastName: lastName, mobileNumber: mobileNumber, emailAddress: emailAddress, company: company)
         
-        self.delegate?.contactAdded(newContact: contact)
+        if !addToRealm(contact: contact) {
+            return
+        }
         
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    func addToRealm(contact: Contact) -> Bool {
+        let realm = try! Realm()
+        
+        do {
+            try realm.write {
+                realm.add(contact)
+            }
+            return true
+        } catch let error as NSError {
+            print("adding to realm error \(error.localizedDescription)")
+        }
+        return false
     }
 }
