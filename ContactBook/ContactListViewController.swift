@@ -132,5 +132,10 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
             }
         }
     }
+    
+    func contactModified(contact: Contact, row : Int) {
+//        self.contacts[row] = contact
+        self.tableView.reloadData()
+    }
 }
 

@@ -17,8 +17,18 @@ class AddEditContactViewController: UIViewController {
     @IBOutlet weak var textFieldEmailAddress: UITextField!
     @IBOutlet weak var textFieldCompany: UITextField!
     
+    var contact: Contact?
+    
     override func viewDidLoad() {
-        
+     
+        if let contact = self.contact {
+            self.navigationItem.title = "Edit Contact"
+            self.textFieldFirstName.text = contact.firstName
+            self.textFieldLastName.text = contact.lastName
+            self.textFieldMobileNumber.text = contact.mobileNumber
+            self.textFieldEmailAddress.text = contact.emailAddress
+            self.textFieldCompany.text = contact.company
+        }
     }
     
     @IBAction func onTapDone(_ sender: Any) {
@@ -50,4 +60,12 @@ class AddEditContactViewController: UIViewController {
         }
         return false
     }
+    
+//    func editContact(contact: Contact) {
+//        guard let row = self.row else {
+//            return
+//        }
+//        self.contact = contact
+//        self.delegate?.contactModified(contact: contact, row: row)
+//    }
 }
