@@ -68,6 +68,8 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
                 return
             }
             target.contact = self.contacts[selectedPath.row]
+            target.row = selectedPath.row
+            target.delegate = self
             return
         }
         if let target = segue.destination as? AddEditContactViewController {
@@ -78,6 +80,11 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
     
     func contactAdded(newContact: Contact) {
         self.contacts.append(newContact)
+        self.tableView.reloadData()
+    }
+    
+    func contactModified(contact: Contact, row : Int) {
+        self.contacts[row] = contact
         self.tableView.reloadData()
     }
 }

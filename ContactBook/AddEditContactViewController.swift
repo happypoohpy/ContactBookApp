@@ -10,6 +10,7 @@ import UIKit
 
 protocol AddEditContactDelegate {
     func contactAdded(newContact: Contact)
+    func contactModified(contact: Contact, row: Int)
 }
 
 class AddEditContactViewController: UIViewController {
@@ -22,8 +23,19 @@ class AddEditContactViewController: UIViewController {
     
     var delegate: AddEditContactDelegate?
     
+    var contact : Contact?
+    var row : Int?
+    
     override func viewDidLoad() {
-        
+     
+        if let contact = self.contact {
+            self.navigationItem.title = "Edit Contact"
+            self.textFieldFirstName.text = contact.firstName
+            self.textFieldLastName.text = contact.lastName
+            self.textFieldMobileNumber.text = contact.mobileNumber
+            self.textFieldEmailAddress.text = contact.emailAddress
+            self.textFieldCompany.text = contact.company
+        }
     }
     
     @IBAction func onTapDone(_ sender: Any) {
@@ -35,8 +47,24 @@ class AddEditContactViewController: UIViewController {
         
         let contact = Contact.init(firstName: firstName, lastName: lastName, mobileNumber: mobileNumber, emailAddress: emailAddress, company: company)
         
-        self.delegate?.contactAdded(newContact: contact)
-        
+        if self.contact != nil {
+            self.editContact(contact: contact)
+        } else {
+            self.addContact(contact: contact)
+        }
+         
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    func addContact(contact: Contact) {
+        self.delegate?.contactAdded(newContact: contact)
+    }
+    
+    func editContact(contact: Contact) {
+        guard let row = self.row else {
+            return
+        }
+        self.contact = contact
+        self.delegate?.contactModified(contact: contact, row: row)
     }
 }
