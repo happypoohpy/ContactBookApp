@@ -17,6 +17,7 @@
 		CB51CA202685C1A100CFA48B /* ContactDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB51CA1F2685C1A100CFA48B /* ContactDetailViewController.swift */; };
 		CB51CA222685C21600CFA48B /* AddEditContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB51CA212685C21600CFA48B /* AddEditContactViewController.swift */; };
 		CB51CA252685DA7C00CFA48B /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB51CA242685DA7C00CFA48B /* Contact.swift */; };
+		CB8E126626ADF299004CF7A3 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8E126526ADF299004CF7A3 /* String.swift */; };
 		CBCB63112687AD96009E0D8B /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCB63102687AD96009E0D8B /* ContactTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +36,7 @@
 		CB51CA1F2685C1A100CFA48B /* ContactDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetailViewController.swift; sourceTree = "<group>"; };
 		CB51CA212685C21600CFA48B /* AddEditContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditContactViewController.swift; sourceTree = "<group>"; };
 		CB51CA242685DA7C00CFA48B /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
+		CB8E126526ADF299004CF7A3 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		CBCB63102687AD96009E0D8B /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 		CBCB63122687C5C6009E0D8B /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBCB63162687C5CA009E0D8B /* RealmSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,19 +85,52 @@
 		CB00363326826863006C1987 /* ContactBook */ = {
 			isa = PBXGroup;
 			children = (
+				CB8E126426AD7D50004CF7A3 /* Extensions */,
+				CB8E126326AD76E3004CF7A3 /* Controllers */,
+				CB8E126226AD76D9004CF7A3 /* Models */,
+				CB8E126726ADF2EE004CF7A3 /* Views */,
 				CB00363426826863006C1987 /* AppDelegate.swift */,
 				CB00363626826863006C1987 /* SceneDelegate.swift */,
-				CB00363826826863006C1987 /* ContactListViewController.swift */,
-				CB51CA1F2685C1A100CFA48B /* ContactDetailViewController.swift */,
-				CB51CA212685C21600CFA48B /* AddEditContactViewController.swift */,
-				CBCB63102687AD96009E0D8B /* ContactTableViewCell.swift */,
-				CB51CA242685DA7C00CFA48B /* Contact.swift */,
-				CB00363A26826863006C1987 /* Main.storyboard */,
 				CB00363D2682686C006C1987 /* Assets.xcassets */,
 				CB00363F2682686C006C1987 /* LaunchScreen.storyboard */,
 				CB0036422682686C006C1987 /* Info.plist */,
 			);
 			path = ContactBook;
+			sourceTree = "<group>";
+		};
+		CB8E126226AD76D9004CF7A3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CB51CA242685DA7C00CFA48B /* Contact.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CB8E126326AD76E3004CF7A3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CB00363826826863006C1987 /* ContactListViewController.swift */,
+				CB51CA1F2685C1A100CFA48B /* ContactDetailViewController.swift */,
+				CB51CA212685C21600CFA48B /* AddEditContactViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		CB8E126426AD7D50004CF7A3 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				CB8E126526ADF299004CF7A3 /* String.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		CB8E126726ADF2EE004CF7A3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CB00363A26826863006C1987 /* Main.storyboard */,
+				CBCB63102687AD96009E0D8B /* ContactTableViewCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		EA1E81B01389E66FE7674F22 /* Pods */ = {
@@ -227,6 +262,7 @@
 				CB00363526826863006C1987 /* AppDelegate.swift in Sources */,
 				CB51CA202685C1A100CFA48B /* ContactDetailViewController.swift in Sources */,
 				CB00363726826863006C1987 /* SceneDelegate.swift in Sources */,
+				CB8E126626ADF299004CF7A3 /* String.swift in Sources */,
 				CBCB63112687AD96009E0D8B /* ContactTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,7 +432,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z63DLN29KQ;
+				DEVELOPMENT_TEAM = X2ZYFYS33F;
 				INFOPLIST_FILE = ContactBook/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

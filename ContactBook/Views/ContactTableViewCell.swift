@@ -14,7 +14,7 @@ class ContactTableViewCell: UITableViewCell {
     @IBOutlet weak var labelMobileNumber: UILabel!
     
     func setup(name: String, mobileNumber: String) {
-        self.labelName.text = name
+        self.labelName.text = name.trim().isEmpty ? mobileNumber : name
         self.labelMobileNumber.text = mobileNumber
     }
 }

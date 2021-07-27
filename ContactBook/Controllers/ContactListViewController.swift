@@ -23,23 +23,47 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
         // Do any additional setup after loading the view.
         self.title = "Contacts"
         searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = self.searchController
         
         self.navigationItem.backButtonTitle = ""
         
-        let realm = try! Realm()
-        
-        self.contacts = realm.objects(Contact.self)
-        
+        self.retreiveContacts()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         self.observeContactListChanges()
     }
-
+    
+    func retreiveContacts() {
+        let realm = try! Realm()
+        
+        self.contacts = realm
+            .objects(Contact.self)
+            .sorted(byKeyPath: "firstName", ascending: true)
+        self.tableView.reloadData()
+    }
+    
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else {
             return
         }
         
-        print(text)
+        if text.isEmpty {
+            retreiveContacts()
+            return
+        }
+        
+        search(text: text)
+    }
+    
+    func search(text: String) {
+        let realm = try! Realm()
+        let results =
+            realm.objects(Contact.self)
+            .filter("(firstName CONTAINS[cd] %@) OR (lastName CONTAINS[cd] %@) OR  (mobileNumber CONTAINS[cd] %@) OR (emailAddress CONTAINS[cd] %@) OR (company CONTAINS[cd] %@)", text, text, text, text, text)
+        self.contacts = results
+        self.tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -51,7 +75,7 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
         let cell = tableView.dequeueReusableCell(withIdentifier: "contactTableViewCell", for: indexPath) as! ContactTableViewCell
         
         if let contacts = self.contacts {
-            let contact = contacts[indexPath.row]
+            let contact = contacts[indexPath.item]
             let name = "\(contact.firstName) \(contact.lastName)"
             
             cell.setup(name: name, mobileNumber: contact.mobileNumber)
@@ -65,7 +89,6 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
         if editingStyle == .delete {
             removeContact(row: indexPath.row)
             return
@@ -77,10 +100,11 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
             return
         }
         let realm = try! Realm()
+        let contact = contacts[row]
         
         do {
             try realm.write {
-                realm.delete(contacts[row])
+                realm.delete(contact)
             }
         } catch let error as NSError {
             print("adding to realm error \(error.localizedDescription)")
@@ -101,12 +125,10 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
     }
     
     func observeContactListChanges() {
-        let realm = try! Realm()
-        let results = realm.objects(Contact.self)
         // Observe collection notifications. Keep a strong
         // reference to the notification token or the
         // observation will stop.
-        notificationToken = results.observe { [weak self] (changes: RealmCollectionChange) in
+        notificationToken = self.contacts?.observe { [weak self] (changes: RealmCollectionChange) in
             guard let tableView = self?.tableView else { return }
             switch changes {
             case .initial:
@@ -133,9 +155,9 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
         }
     }
     
-    func contactModified(contact: Contact, row : Int) {
-//        self.contacts[row] = contact
-        self.tableView.reloadData()
+    @IBAction func unwindToContactList(unwindSegue: UIStoryboardSegue) {
+        
     }
+    
 }
 
