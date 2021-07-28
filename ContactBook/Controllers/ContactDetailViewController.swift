@@ -98,7 +98,7 @@ class ContactDetailViewController: UIViewController {
                 realm.delete(contact)
             }
         } catch let error as NSError {
-            print("adding to realm error \(error.localizedDescription)")
+            print("removing to realm error \(error.localizedDescription)")
         }
     }
 }

@@ -154,7 +154,7 @@ class AddEditContactViewController: UIViewController {
             }
             return true
         } catch let error as NSError {
-            print("adding to realm error \(error.localizedDescription)")
+            print("updating to realm error \(error.localizedDescription)")
         }
         return false
     }
@@ -170,7 +170,7 @@ class AddEditContactViewController: UIViewController {
                 realm.delete(contact)
             }
         } catch let error as NSError {
-            print("adding to realm error \(error.localizedDescription)")
+            print("removing to realm error \(error.localizedDescription)")
         }
     }
 }

@@ -107,7 +107,7 @@ class ContactListViewController: UIViewController, UISearchResultsUpdating, UITa
                 realm.delete(contact)
             }
         } catch let error as NSError {
-            print("adding to realm error \(error.localizedDescription)")
+            print("removing to realm error \(error.localizedDescription)")
         }
     }
     
