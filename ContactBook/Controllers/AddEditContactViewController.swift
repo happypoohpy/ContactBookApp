@@ -36,16 +36,16 @@ class AddEditContactViewController: UIViewController {
         } else {
             self.buttonDelete.isHidden = true
         }
-        observeContactListChanges()
+//        observeContactListChanges()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
     func observeContactListChanges() {
         guard let contact = self.contact else {
             return
         }
-        
+
         let realm = try! Realm()
         let results = realm.object(ofType: Contact.self, forPrimaryKey: contact._id)
         // Observe collection notifications. Keep a strong
@@ -172,5 +172,6 @@ class AddEditContactViewController: UIViewController {
         } catch let error as NSError {
             print("removing to realm error \(error.localizedDescription)")
         }
+        self.performSegue(withIdentifier: "unwindToContactList", sender: self)
     }
 }
